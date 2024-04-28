@@ -140,7 +140,7 @@ endtask
 	
 function void report();
 	$display(" ------------------------ SCOREBOARD REPORT ----------------------- \n ");
-	$display(" %0d Read Data Generated, %0d Read Data Recevied, %0d Read Data Verified \n",gen_data_count,rcvd_data_count,data_verified);
+	$display(" %0d Read Data Generated, %0d Read Data Recevied, %0d \n",verif_wData, verif_rData);
 	$display(" ------------------------------------------------------------------ \n ");
 endfunction: report
 
