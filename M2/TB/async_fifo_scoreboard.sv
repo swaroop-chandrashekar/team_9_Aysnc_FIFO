@@ -7,7 +7,7 @@
 class aysn_fifo_sb;
 
 // Declare an event DONE
-	event DONE; 
+event DONE; 
 
 // Declare 4 int datatypes for counting
 // number of write transaction count
