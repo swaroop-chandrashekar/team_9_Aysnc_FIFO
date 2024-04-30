@@ -20,7 +20,7 @@ class generator;
 			begin
 				trans_w = new();
 				trans_w.randomize();
-				if( !trans_w.randomize() ) $fatal("Gen:: trans randomization failed");
+				if( !trans_w.randomize() with {trans_w.winc ==1;} ) $fatal("Gen:: trans randomization failed");
 				trans_w.display("Generator");						//to check values of inputs
 				gen2driv_write.put(trans_w);
 			end
@@ -32,7 +32,7 @@ class generator;
 			begin
 				trans_r = new();
 				trans_r.randomize();
-				if( !trans_r.randomize() ) $fatal("Gen:: trans randomization failed");
+				if( !trans_r.randomize() with {trans_r.rinc ==1;}) $fatal("Gen:: trans randomization failed");
 				trans_r.display("Generator");						//to check values of inputs
 				gen2driv_read.put(trans_r);
 			end
