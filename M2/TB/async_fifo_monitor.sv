@@ -1,7 +1,7 @@
 //monitor is dynamic in nature so we use virtual interface 
 //handle is something when you don't give memory when you give memory then it
 //is called object........
-class monitor
+class monitor;
 int w_count;
 int r_count;
 int trans_count_write;
