@@ -7,14 +7,10 @@ class generator;
 	mailbox gen2driv_read,gen2driv_write;
 	//event ended;
 
-	function new1(mailbox gen2driv_write);
+	function new(mailbox gen2driv_write,mailbox gen2driv_read);
 	this.gen2driv_write = gen2driv_write;
-	endfunction
-    
-    function new2(mailbox gen2driv_read);
 	this.gen2driv_read = gen2driv_read;
 	endfunction
-
 
 	task trans_write();
 		repeat(10)
