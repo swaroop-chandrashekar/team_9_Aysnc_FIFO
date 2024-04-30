@@ -1,19 +1,20 @@
+/*******************************************************************************************/
+
 // File_name : async_fifo_scoreboard.sv
 // Author : Shashikirana
 // Version : 1.0
 
 /*******************************************************************************************/
+import fifo_pkg::*;
 
-class aysn_fifo_sb;
-
-// Declare an event DONE
-event DONE; 
+class async_scoreboard;
 
 // Declare 4 int datatypes for counting
 // number of write transaction count
 // number of read transaction count
 // number of write data 
 // number of read data
+parameter DATA_SIZE = 12;
 
 int trans_count_write = 0;
 int trans_count_read = 0;
@@ -39,10 +40,7 @@ transaction_read cov_data1;
 mailbox #(transaction_write)mon2scb_write; //write mon to sb
 mailbox #(transaction_read)mon2scb_read;   //Read mon to sb
 
-/*function new(mailbox mon2scb_write, mailbox mon2scb_read);
-	this.mon2scb_write = mon2scb_write;
-   	this.mon2scb_read = mon2scb_read;
-endfunction*/ 
+logic detect_rEmpty, detect_wFull;
 
 
 //create instance     
@@ -52,10 +50,10 @@ function new(mailbox #(transaction_write) mon2scb_write, mailbox #(transaction_r
 	//mem_coverage = new();
 endfunction: new
 
-//In start task 
+//In main task 
 //Within fork join_none  begin end
 
-task start();
+task main();
 	fork
 		while(1)
 		begin
@@ -63,23 +61,23 @@ task start();
     			repeat (trans_count_write) 
 			begin
         			wait (mon2scb_write.num() > 0);
-        			score_write();
+        			scoreboard_write();
     			end
 
     			// Process read transactions
     			repeat (trans_count_read) 
 			begin
         			wait (mon2scb_read.num() > 0);
-        			score_read();
+        			scoreboard_read();
     			end
                        
-		//Call check task and pass 'rcvd_data' handle as the input argument
-		//check(rcvd_data);
+		//Call check task
+		check();
 		end
 	join_none
-endtask: start
+endtask: main
 
-task score_write;
+task scoreboard_write;
 
 	transaction_write trans_w; 
     	trans_w = new(); 
@@ -94,7 +92,7 @@ task score_write;
    
 endtask
 
-task score_read;
+task scoreboard_read;
 
 	transaction_read trans_r;
     	trans_r = new(); 
@@ -104,6 +102,8 @@ task score_read;
     	r_count++; 
 
 endtask
+
+// Compare the result
 
 task check();
 	transaction_read trans_r;
