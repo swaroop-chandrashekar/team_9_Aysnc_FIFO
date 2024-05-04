@@ -1,61 +1,88 @@
 //async_fifo_environment.sv - smit patel 
 
-import fifo_pkg::*;
+import async_fifo_pkg::*;
+
 
 class environment;
+    
+//Instantiate Generator and Driver
 generator gen;
 driver driv;
 monitor mon;
 scoreboard scb;
-
-mailbox gen2driv_read;
-mailbox gen2driv_write;
-
-mailbox mon2scb_read;
-mailbox mon2scb_write;
-//event gen_ended;
-
+  
+//Instantiate Communication between Generator and Driver
+mailbox gen2driv;
+mailbox mon2scb;
+  
+event driv2gen;
+  
 virtual intf vif;
 
-	function new(virtual intf vif);
-		this.vif = vif;
+int no_of_transactions;
 
-		gen2driv_read = new();
-		gen2driv_write = new();
-
-		mon2scb_write = new();
-		mon2scb_read = new();
-
-		gen = new(gen2driv_write, gen2driv_read);
-		scb = new(mon2scb_write, mon2scb_read);
-		driv = new(vif,gen2driv_write,gen2driv_read);
-		mon = new(vif,mon2scb_write,mon2scb_read);
-	endfunction
-
-	task pre_test();
-		driv.reset();
-	endtask
-
-	task test();
-		$display("Write data requested",gen.trans_count_write);  
-		$display("read data requested", gen.trans_count_read); 
-		gen.main();
-		fork
-			driv.main();   //driv started
-			mon.main();	//mon started
-			scb.main();	//scoreboard started
-		join
-
-		$display("Data check Initiated");
-		scb.check();
-		$display("Data check has completed");
-	endtask
+function new(virtual intf vif);
+	this.vif = vif;
+    	gen2driv = new();
+    	mon2scb	 = new();
+    	gen	 = new(gen2driv, driv2gen);
+    	driv 	 = new (vif,gen2driv);
+    	mon 	 = new (vif, mon2scb);
+    	scb	 = new (mon2scb);
+endfunction
+  
+ //reset task
+task pre_env();
+	driv.reset();
+endtask
+    
+//Generate and Drive
+task test();
 	
-	task run;
-		pre_test();
-		test();
-	endtask
+	
+  	/*$display("\n\n********************************");
+	$display("------Bursts requested %0d-------",gen.trans_count);
+    	$display("********************************");
+    	$display("********************************");*/
+    
+    	gen.main();
+	$display("DRIV START");
+  		 driv.main();
+      
+        $display("MON START");
+  		mon.main();
+      
+       $display ("SCB START");
+        scb.main();
+      
 
+endtask
+
+  
+task post_env();
+	$display("IN POST TEST");
+    	wait(driv2gen.triggered);
+    		$display("1 DONE");
+    	wait(gen.trans_count == driv.no_trans);
+    		$display("2 DONE");
+    	wait (gen.trans_count == scb.no_trans);
+    		$display("3 DONE");
+endtask
+    
+//task run
+task run();
+	pre_env();
+	$display("------ Bursts requested %0d-------",gen.trans_count);
+    	for (int i = 0; i < no_of_transactions; i++) 
+	begin
+    		test(); // Call the original drive task
+    	end
+       //post_env();
+    	$finish;
+
+endtask
+        
 endclass
-	
+
+
 	
