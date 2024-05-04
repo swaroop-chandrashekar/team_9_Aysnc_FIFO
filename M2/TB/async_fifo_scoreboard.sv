@@ -43,10 +43,10 @@ begin
           		$display("\n\n ********PASSED at address %0h - trans_sb.Data = %0h - Saved Data = %0h**********************",rd_count, trans_sb.rData,fifo_mem[rd_count]);
                    	rd_count = rd_count + 1;
       		end 
-		/*else 
+		else 
 		begin
          		$display("\n\n ERROR at address %0h - trans_sb.Data = %0h - Saved Data = %0h",rd_count,trans_sb.rData,fifo_mem[rd_count]);
-      		end*/
+      		end
     	end
 
       // Full & Empty checks
