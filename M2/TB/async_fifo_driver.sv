@@ -1,106 +1,88 @@
+/********************************************************************************************
+Filename:	async_fifo_driver.sv   
+Description:	Driver class for ASYNC_FIFO testbench
+Version:	2.0
+
+*********************************************************************************************/
+
+
+
 class driver;
-int trans_count_read;
-int trans_count_write;
-
-   
-virtual intf intf_vi;
-   	
-mailbox gen2driv_write;
-mailbox gen2driv_read;
+    
+int no_trans;
+ 
+generator gen;
+virtual intf drv_if;
+mailbox gen2driv;
 
 
-   
-function new(virtual intf intf_vi, mailbox gen2driv_write,mailbox gen2driv_read);
-        
-	this.intf_vi = intf_vi;
-        this.gen2driv_write = gen2driv_write;
-	this.gen2driv_read = gen2driv_read;
-   
+//this function allows for communcation with mailbox and creates an interface
+function new(virtual intf drv_if, mailbox gen2driv);
+	this.drv_if = drv_if;
+        this.gen2driv = gen2driv;
 endfunction
 
-     
+//reset when write or read reset
 task reset;
-       
-	$display("Driver Reset Initiated");
-	
-        intf_vi.wData = 0;
-        intf_vi.winc = 0;
-      
-		intf_vi.rinc = 0;
-
-        $display("Driver Reset is Complete");
-   
+	$display("Reset Initiated");
+        wait(drv_if.wrst || drv_if.rrst);
+        drv_if.wData <= 0;
+        drv_if.winc <= 0;
+        drv_if.rinc <= 0;
+      	wait(!drv_if.wrst || drv_if.rrst);
+        $display("Reset is Complete");
 endtask
   
 
-  
-task drive_write();
-
-     	transaction_write txw;
-		txw=new();
-  
-      	gen2driv_write.get(txw);
-	
-	
-  	intf_vi.winc = txw.winc;
-    intf_vi.wData = txw.wData;;
-     @(posedge intf_vi.wclk);
-  	 @(posedge intf_vi.wclk);
-  
-  
-           
-endtask
-       
-    
-task drive_read();
-    
-     transaction_read txr;
-	 txr=new();
-  
-     gen2driv_read.get(txr);
-     	
-	intf_vi.rinc = txr.rinc;
-  	@(posedge intf_vi.rclk);
-  	@(posedge intf_vi.rclk);
-
-	
-  
+virtual task drive();
+begin 
+	transaction trans1;
+       	drv_if.winc <= 0;
+      	drv_if.rinc <= 0;
+       	gen2driv.get(trans1);
+ 
+        @(posedge drv_if.wclk);
+        if(trans1.winc) 
+	begin
+        	drv_if.winc <= trans1.winc;
+        	drv_if.wData <= trans1.wData;;
+          	trans1.wFull = drv_if.wFull;
+          	trans1.rEmpty = drv_if.rEmpty;
+          	$display ("\t winc = %0h \t wData = %0h", trans1.winc, trans1.wData);
+        end 
+	else 
+	begin
+        	$display ("\t winc = %0h \t wData = %0h", trans1.winc, trans1.wData);
+        end
+ 
+        
+        if(trans1.rinc)
+	begin
+        	drv_if.rinc <= trans1.rinc;
+         	@(posedge drv_if.rclk);
+       	  	drv_if.rinc <=trans1.rinc;
+          	@(posedge drv_if.rclk);
+         	trans1.rData = drv_if.rData;
+          	trans1.wFull = drv_if.wFull;
+         	trans1.rEmpty = drv_if.rEmpty;
+         	$display ("\t rinc = %0h", trans1.rinc);
+        end 
+	else 
+	begin
+        	$display ("\t rinc = %0h", trans1.rinc);
+        end
+        
+end
 endtask   
 
-     
 task  main();
-
-	fork
-		begin
-          repeat(10) @(posedge intf_vi.wclk);
-          for (integer i = 0; i < trans_count_write ; i++) begin
-            $display("Write transaction count= %0d--------------------",i+1); 	
-            
-            drive_write();
-            
-            
-    			end
-				intf_vi.winc=0;
-				intf_vi.wData=0;
-
-        	end
-
-
-		begin
-			repeat(10) @(posedge intf_vi.rclk);
-          for (integer j = 0; j < trans_count_read ; j++) begin
-            $display("Read transaction count= %0d--------------------",j+1);
-				drive_read(); 
-    			end
-			intf_vi.rinc=0;
-
-        	end
-
-	join
-
-		
-
-
+begin
+	for (int i = 0; i < 1; i++) 
+	begin
+        	drive(); 
+	end
+end
 endtask
          
 endclass
+
