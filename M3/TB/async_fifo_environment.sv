@@ -1,6 +1,6 @@
 //async_fifo_environment.sv - smit patel 
 
-import async_fifo_pkg::*;
+import fifo_pkg::*;
 
 
 class environment;
