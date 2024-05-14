@@ -1,4 +1,4 @@
-import async_fifo_pkg::*;
+import fifo_pkg::*;
 
 program test(intf in);
   environment env;
