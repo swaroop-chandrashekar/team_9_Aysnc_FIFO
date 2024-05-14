@@ -1,42 +1,27 @@
-import fifo_pkg::*;
+class generator;
 
-class generator;                       
-	rand transcation_write trans_w;	 			//declaring transcation class
-	rand transcation_read trans_r;
-	mailbox gen2driv_read,gen2driv_write;
-	int trans_count_write ;
-	int trans_count_read ;
+rand transaction trans;
+int trans_count;
+event driv2gen;
+  
+mailbox gen2driv;
 
+function new(mailbox gen2driv, event driv2gen); 
+	this.gen2driv = gen2driv;
+    	this.driv2gen = driv2gen;
+endfunction
 
+task main();
 	
-	function new(mailbox gen2driv_write,mailbox gen2driv_read);
-	this.gen2driv_write = gen2driv_write;
-	this.gen2driv_read = gen2driv_read;
-	endfunction
-
-	
-	task trans_write();
-		repeat(trans_count_write)
-			begin
-				trans_w = new();
-				trans_w.randomize();
-				if( !trans_w.randomize() with {trans_w.winc ==1;} ) $fatal("Gen:: trans randomization failed");
-				trans_w.display("Generator");						//to check values of inputs
-				gen2driv_write.put(trans_w);
-			end
-	endtask
-    
-    
-    	task trans_read();
-		repeat(trans_count_read)
-			begin
-				trans_r = new();
-				trans_r.randomize();
-				if( !trans_r.randomize() with {trans_r.rinc ==1;}) $fatal("Gen:: trans randomization failed");
-				trans_r.display("Generator");						//to check values of inputs
-				gen2driv_read.put(trans_r);
-			end
-	endtask
+	repeat (trans_count) 
+	begin         
+        	trans = new(); 
+      		if(!trans.randomize()) 
+			$fatal ("Gene:: transaction randomization Failed");
+        	gen2driv.put(trans);
+    	end
+      	->driv2gen;
+endtask
 
 endclass
 
