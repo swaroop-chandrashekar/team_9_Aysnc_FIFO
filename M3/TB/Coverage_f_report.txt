@@ -1,0 +1,84 @@
+# Coverage Report Summary Data by file
+# 
+# =================================================================================
+# === File: async_fifo.sv
+# =================================================================================
+#     Enabled Coverage            Active      Hits    Misses % Covered
+#     ----------------            ------      ----    ------ ---------
+#     Stmts                           31        31         0     100.0
+#     Branches                        18        18         0     100.0
+#     FEC Condition Terms              6         5         1      83.3
+#     Toggle Bins                    612       574        38      93.7
+# 
+# 
+# Total Coverage By File (code coverage only, filtered view): 94.2%
+# 
+# 
+# COVERGROUP COVERAGE:
+# ------------------------------------------------------------------------------------------------------------------------
+# Covergroup                                         RHS                           Metric       Goal    Status               
+#                                                                                                                         
+# ------------------------------------------------------------------------------------------------------------------------
+#  TYPE /async_fifo_top/async_fifo_cover                                           100.0%        100    Covered              
+#     covered/total bins:                                                              12         12                      
+#     missing/total bins:                                                               0         12                      
+#     % Hit:                                                                       100.0%        100                      
+#     Coverpoint async_fifo_cover::WRITE_DATA                                      100.0%        100    Covered              
+#         covered/total bins:                                                           3          3                      
+#         missing/total bins:                                                           0          3                      
+#         % Hit:                                                                   100.0%        100                      
+#     Coverpoint async_fifo_cover::EMPTY                                           100.0%        100    Covered              
+#         covered/total bins:                                                           2          2                      
+#         missing/total bins:                                                           0          2                      
+#         % Hit:                                                                   100.0%        100                      
+#     Coverpoint async_fifo_cover::READ_DATA                                       100.0%        100    Covered              
+#         covered/total bins:                                                           3          3                      
+#         missing/total bins:                                                           0          3                      
+#         % Hit:                                                                   100.0%        100                      
+#     Coverpoint async_fifo_cover::INCREMENT                                       100.0%        100    Covered              
+#         covered/total bins:                                                           2          2                      
+#         missing/total bins:                                                           0          2                      
+#         % Hit:                                                                   100.0%        100                      
+#     Coverpoint async_fifo_cover::INCREMENTread                                   100.0%        100    Covered              
+#         covered/total bins:                                                           2          2                      
+#         missing/total bins:                                                           0          2                      
+#         % Hit:                                                                   100.0%        100                      
+#  Covergroup instance \/async_fifo_top/async_fifo_cov_inst  
+#                                                                                  100.0%        100    Covered              
+#     covered/total bins:                                                              12         12                      
+#     missing/total bins:                                                               0         12                      
+#     % Hit:                                                                       100.0%        100                      
+#     Coverpoint WRITE_DATA                                                        100.0%        100    Covered              
+#         covered/total bins:                                                           3          3                      
+#         missing/total bins:                                                           0          3                      
+#         % Hit:                                                                   100.0%        100                      
+#         bin low_range                              1:511                           1838          1    Covered              
+#         bin mid_range                              512:1023                        1989          1    Covered              
+#         bin high_range                             1023:2048                       3906          1    Covered              
+#     Coverpoint EMPTY                                                             100.0%        100    Covered              
+#         covered/total bins:                                                           2          2                      
+#         missing/total bins:                                                           0          2                      
+#         % Hit:                                                                   100.0%        100                      
+#         bin empty_c                                0=>1                            1260          1    Covered              
+#         bin empty_c1                               1=>0                            1260          1    Covered              
+#     Coverpoint READ_DATA                                                         100.0%        100    Covered              
+#         covered/total bins:                                                           3          3                      
+#         missing/total bins:                                                           0          3                      
+#         % Hit:                                                                   100.0%        100                      
+#         bin low_range                              1:511                           1255          1    Covered              
+#         bin mid_range                              512:1023                        1048          1    Covered              
+#         bin high_range                             1023:2048                       2462          1    Covered              
+#     Coverpoint INCREMENT                                                         100.0%        100    Covered              
+#         covered/total bins:                                                           2          2                      
+#         missing/total bins:                                                           0          2                      
+#         % Hit:                                                                   100.0%        100                      
+#         bin incr_s                                 0=>1                            2509          1    Covered              
+#         bin incr_s1                                1=>0                            2508          1    Covered              
+#     Coverpoint INCREMENTread                                                     100.0%        100    Covered              
+#         covered/total bins:                                                           2          2                      
+#         missing/total bins:                                                           0          2                      
+#         % Hit:                                                                   100.0%        100                      
+#         bin incr_sr                                0=>1                            2524          1    Covered              
+#         bin incr_s1r                               1=>0                            2524          1    Covered              
+# 
+# TOTAL COVERGROUP COVERAGE: 100.0%  COVERGROUP TYPES: 1
