@@ -11,10 +11,9 @@ Version:	1.0
 
 
 module async_fifo_top;
- parameter DATA_SIZE = 12;
-  parameter ADDR_SIZE = 12;
-  environment env;
-  logic winc;
+	parameter DATA_SIZE = 12;
+  	parameter ADDR_SIZE = 12;
+  	logic winc;
 	logic rinc;
 	logic [DATA_SIZE-1:0] wData;
 
@@ -104,63 +103,37 @@ ASYNC_FIFO DUT (.wData(in.wData),
   }
 
 
-// Coverpoints for address signals
-WRITE_ADDR: coverpoint in.waddr {
-  option.comment = "write address";
-  bins address_range1 = { [0:127]};
-  bins address_range2 = {[128:255]};
-  bins address_range3 ={ [256:383]};
-  bins address_range4 = { [384:511]};
-  bins address_range5 = {[512:767]};
-  bins address_range6 = {[768:1023]};
-  bins address_range7 = {[1024:1535]};
-  bins address_range8 = {[1536:2048]};
-}
-
-READ_ADDR: coverpoint in.raddr {
-  option.comment = "read address";
-  bins address_range1 = { [0:127]};i
-  bins address_range2 = {[128:255]};
-  bins address_range3 ={ [256:383]};
-  bins address_range4 = { [384:511]};
-  bins address_range5 = {[512:767]};
-  bins address_range6 = {[768:1023]};
-  bins address_range7 = {[1024:1535]};
-  bins address_range8 = {[1536:2048]};
-}
-  	
-
 // Coverpoints for reset signals
   WRITE_RESET: coverpoint in.wrst {
     option.comment = "write reset signal";
-    bins reset_low_to_high = {0 =>1};
-    bins reset_high_to_low = {1 =>0};
+    bins reset_low_to_high = (0 =>1);
+    bins reset_high_to_low = (1 =>0);
 
   }
 
   READ_RESET: coverpoint in.rrst {
     option.comment = "read reset signal";
-    bins reset_low_to_high = {0 =>1};
-    bins reset_high_to_low = {1 =>0};
+    bins reset_low_to_high = (0 =>1);
+    bins reset_high_to_low = (1 =>0);
   }
 
 
 // Coverpoints for clock signals
 WRITE_CLK: coverpoint in.wclk {
   option.comment = "write clock signal";
-  bins clk_low_to_high = {0 => 1};
-  bins clk_high_to_low = {1 => 0};
+  bins clk_low_to_high = (0 => 1);
+  bins clk_high_to_low = (1 => 0);
 }
 
 READ_CLK: coverpoint in.rclk {
   option.comment = "read clock signal";
-  bins clk_low_to_high = {0 => 1};
-  bins clk_high_to_low = {1 => 0};
+  bins clk_low_to_high = (0 => 1);
+  bins clk_high_to_low = (1 => 0);
 }
 
-WRITExADDxDATA : cross WRITE_CLK,WRITE_INC,WRITE_ADDR,WRITE_DATA;
-READxADDxDATA  : cross READ_CLK,READ_INC, READ_ADDR, READ_DATA;
-READxWRITE     : cross WRITE_ADDR, WRITE_DATA, READ_ADDR,READ_DATA;
+WRITExADDxDATA : cross WRITE_CLK,WRITE_INC,WRITE_DATA;
+READxADDxDATA  : cross READ_CLK, READ_INC, READ_DATA;
+READxWRITE     : cross  WRITE_DATA,READ_DATA;
 RESETxWRITE    : cross WRITE_RESET, WRITE_DATA;
 RESETxREAD     : cross READ_RESET , READ_DATA;
 
